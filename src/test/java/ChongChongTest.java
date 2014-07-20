@@ -5,9 +5,11 @@ import ivy.core.tool.Str;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -54,11 +56,21 @@ public class ChongChongTest {
 	@Test
 	public void test() throws AppException {
 		List<ChongChong> list = ReadList.read();
+		list = buildcc();
 		System.out.println("共读取" + list.size() + "个网页");
 		for (ChongChong cc : list) {
 			findMp3(cc);
 		}
 		// findMp3(buildCC());
+	}
+
+	private List<ChongChong> buildcc() {
+		List<ChongChong> list = new ArrayList<ChongChong>();
+		list.add(new ChongChong("故乡的原风景钢琴谱-森海岸原",
+				"http://www.gangqinpu.com/html/18559.htm"));
+		list.add(new ChongChong("故乡的原风景 -FO-A",
+				"http://www.gangqinpu.com/html/11282.htm"));
+		return list;
 	}
 
 	public ChongChong buildCC() {
@@ -142,10 +154,14 @@ public class ChongChongTest {
 		try {
 			HttpResponse response = client.execute(request, httpContext);
 			if (response.getStatusLine().getStatusCode() == 200) {
-				InputStream inputStream = response.getEntity().getContent();
-
+				HttpEntity entity = response.getEntity();
+				long contentLength = entity.getContentLength();
+				Double size = contentLength / 1024.0 / 1024.0;
+				System.out.println("准备下载文件大小:" + String.format("%1$3.2f", size)
+						+ "MB");
+				InputStream inputStream = entity.getContent();
 				CCUtil.save(inputStream, filename, type);
-				return ;
+				return;
 			} else {
 				throw new AppException("下载MP3失败,返回HTTP-CODE:"
 						+ response.getStatusLine().getStatusCode());

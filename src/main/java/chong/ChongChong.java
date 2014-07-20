@@ -1,4 +1,5 @@
 package chong;
+
 /**
  */
 public class ChongChong {
@@ -18,6 +19,16 @@ public class ChongChong {
 	}
 
 	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public ChongChong() {
+		super();
+	}
+
+	public ChongChong(String name, String url) {
+		super();
+		this.name = name;
 		this.url = url;
 	}
 }
