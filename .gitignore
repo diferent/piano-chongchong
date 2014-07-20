@@ -1,0 +1,9 @@
+.svn/
+/WebContent/WEB-INF/classes/
+/build/classes/
+.settings/
+.project
+.classpath
+/bin/
+/target/
+
