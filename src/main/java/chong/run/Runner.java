@@ -1,8 +1,12 @@
+package chong.run;
+
 import ivy.basic.AppException;
 import ivy.core.tool.Str;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -20,7 +24,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.junit.Test;
 
 import chong.CCUtil;
 import chong.ChongChong;
@@ -29,10 +32,9 @@ import com.ly.global.InfoShip;
 
 /**
  */
-public class ChongChongTest {
+public class Runner {
 
 	private String CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36";
-
 	private String song = "/Ajax/pudata.aspx?songid";
 	private String site = "http://www.gangqinpu.com";
 	private String site1 = "st.aspnethome.cn";
@@ -42,10 +44,32 @@ public class ChongChongTest {
 
 	private HttpClient client;
 
-	@Test
-	public void test() throws AppException {
+	public static void main(String[] args) {
+		try {
+			System.out.println("please Input Number:");
+			InputStreamReader input = new InputStreamReader(System.in);
+			BufferedReader read = new BufferedReader(input);
+			String value = null;
+			while ((value = read.readLine()) != null) {
+				if (Str.isNotEmpty(value)) {
+					try {
+						new Runner().start(value);
+					} catch (AppException e) {
+						e.printStackTrace();
+					}
+				} else {
+					System.out.println("Input is Empty!");
+				}
+			}
+		} catch (IOException e) {
+			System.out.println(e.toString());
+		}
+
+	}
+
+	public void start(String value) throws AppException {
 		List<ChongChong> list = null;
-		list = buildcc();
+		list = buildcc(value);
 		System.out.println("共读取" + list.size() + "个网页");
 		for (ChongChong cc : list) {
 			findMp3(cc);
@@ -53,13 +77,9 @@ public class ChongChongTest {
 		// findMp3(buildCC());
 	}
 
-	private List<ChongChong> buildcc() {
+	private List<ChongChong> buildcc(String value) {
 		List<ChongChong> list = new ArrayList<ChongChong>();
-		list.add(new ChongChong("名侦探柯南插曲---步美的ost",
-				"http://www.gangqinpu.com/html/8976.htm"));
-		list.add(new ChongChong("—名侦探柯南-《绀碧之棺》主题曲",
-				"http://www.gangqinpu.com/html/11101.htm"));
-		
+		list.add(new ChongChong(value));
 		return list;
 	}
 
@@ -72,6 +92,7 @@ public class ChongChongTest {
 			String string = array[0];
 			array = string.split(Pattern.quote(titleStart), 2);
 			title = array[1];
+			title = title.replaceAll("-虫虫钢琴谱免费下载", "");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

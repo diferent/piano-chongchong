@@ -20,6 +20,7 @@ public class CCUtil {
 		FileOutputStream output = null;
 		try {
 			System.out.println("正在准备下载MP3:" + file.getName());
+			System.out.println("下载到:" +file.toString());
 			output = new FileOutputStream(file);
 			IOUtils.copy(input, output);
 			System.out.println("下载完成!");
