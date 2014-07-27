@@ -30,6 +30,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
+import com.ly.global.InfoShip;
 import com.sun.tools.xjc.model.CCustomizable;
 
 import chong.CCUtil;
@@ -42,8 +43,6 @@ public class ChongChongTest {
 
 	private String CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36";
 
-	private String url = "http://www.gangqinpu.com/html/2999.htm";
-
 	private String song = "/Ajax/pudata.aspx?songid";
 	private String site = "http://www.gangqinpu.com";
 	private String site1 = "st.aspnethome.cn";
@@ -55,7 +54,7 @@ public class ChongChongTest {
 
 	@Test
 	public void test() throws AppException {
-		List<ChongChong> list = ReadList.read();
+		List<ChongChong> list = null;
 		list = buildcc();
 		System.out.println("共读取" + list.size() + "个网页");
 		for (ChongChong cc : list) {
@@ -66,18 +65,27 @@ public class ChongChongTest {
 
 	private List<ChongChong> buildcc() {
 		List<ChongChong> list = new ArrayList<ChongChong>();
-		list.add(new ChongChong("故乡的原风景钢琴谱-森海岸原",
-				"http://www.gangqinpu.com/html/18559.htm"));
-		list.add(new ChongChong("故乡的原风景 -FO-A",
-				"http://www.gangqinpu.com/html/11282.htm"));
+		list.add(new ChongChong("名侦探柯南插曲---步美的ost",
+				"http://www.gangqinpu.com/html/8976.htm"));
+		list.add(new ChongChong("—名侦探柯南-《绀碧之棺》主题曲",
+				"http://www.gangqinpu.com/html/11101.htm"));
+		
 		return list;
 	}
 
-	public ChongChong buildCC() {
-		ChongChong cc = new ChongChong();
-		cc.setName("保卫黄河!");
-		cc.setUrl(url);
-		return cc;
+	public String matchTitle(String http) {
+		String title = InfoShip.uuidNoLine();
+		try {
+			String titleStart = "<title>";
+			String titleEnd = "</title>";
+			String[] array = http.split(Pattern.quote(titleEnd), 2);
+			String string = array[0];
+			array = string.split(Pattern.quote(titleStart), 2);
+			title = array[1];
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return title;
 	}
 
 	public void findMp3(ChongChong cc) {
@@ -86,6 +94,9 @@ public class ChongChongTest {
 			if (Str.isEmpty(http)) {
 				System.out.println("HTTP 返回结果 为空!");
 			} else {
+				if (Str.isEmpty(cc.getName())) {
+					cc.setName(matchTitle(http));
+				}
 				int index = http.indexOf(song);
 				if (index > 0) {
 					String value = http.substring(index);

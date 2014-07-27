@@ -1,5 +1,7 @@
 package chong;
 
+import ivy.core.tool.Str;
+
 /**
  */
 public class ChongChong {
@@ -19,6 +21,11 @@ public class ChongChong {
 	}
 
 	public void setUrl(String url) {
+		if (Str.isNotEmpty(url)) {
+			if (!url.contains(":")) {
+				url = "http://www.gangqinpu.com/html/" + url + ".htm";
+			}
+		}
 		this.url = url;
 	}
 
@@ -29,6 +36,11 @@ public class ChongChong {
 	public ChongChong(String name, String url) {
 		super();
 		this.name = name;
-		this.url = url;
+		setUrl(url);
+	}
+
+	public ChongChong(String url) {
+		super();
+		setUrl(url);
 	}
 }
